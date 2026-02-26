@@ -102,7 +102,6 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                     <TabsList className="bg-muted/50 p-1">
                         <TabsTrigger value="at-risk">At Risk</TabsTrigger>
                         <TabsTrigger value="top-performers">Top Performers</TabsTrigger>
-                        <TabsTrigger value="recent-activity">Recent Activity</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="at-risk" className="space-y-4">
@@ -207,11 +206,6 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="recent-activity" className="space-y-4">
-                        <div className="rounded-md border bg-card text-center py-16 text-muted-foreground/60">
-                            Activity feed integration coming soon.
-                        </div>
-                    </TabsContent>
                 </Tabs>
             </CardContent>
         </Card>
