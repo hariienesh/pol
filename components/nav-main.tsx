@@ -47,7 +47,6 @@ export function NavMain({
                     isActive={isActive}
                     tooltip={item.title}
                     render={<Link href={item.url} />}
-                    nativeButton={false}
                     className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
                   >
                     {item.icon}
@@ -81,7 +80,6 @@ export function NavMain({
                           <SidebarMenuSubItem key={subItem.title}>
                             <SidebarMenuSubButton
                               render={<Link href={subItem.url} />}
-                              nativeButton={false}
                               isActive={pathname === subItem.url}
                             >
                               <span>{subItem.title}</span>
@@ -102,7 +100,6 @@ export function NavMain({
                   isActive={isActive}
                   tooltip={item.title}
                   render={<Link href={item.url} />}
-                  nativeButton={false}
                 >
                   {item.icon}
                   <span>{item.title}</span>

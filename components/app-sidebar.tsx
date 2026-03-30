@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, UsersIcon, ClockIcon, CommandIcon } from "lucide-react"
+import { LayoutDashboardIcon, UsersIcon, ClockIcon, CommandIcon, TrophyIcon } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 
 const navItems = [
@@ -30,6 +30,11 @@ const navItems = [
     title: "Recent Entries",
     url: "/entries",
     icon: <ClockIcon />,
+  },
+  {
+    title: "Hall of Fame",
+    url: "/hall-of-fame",
+    icon: <TrophyIcon />,
   },
 ]
 
@@ -54,7 +59,6 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              nativeButton={false}
               render={<Link href="/" />}
             >
               <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-primary text-primary-foreground">

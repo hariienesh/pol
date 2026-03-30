@@ -6,11 +6,9 @@ export default async function PrefectDetailPage({ params }: { params: Promise<{ 
     const { id } = await params
     const supabase = await createClient()
 
-    // We split the query to make it more resilient. 
-    // If the profiles table doesn't exist, the joins will fail the whole query.
     const { data: prefect, error: prefectError } = await supabase
         .from('prefects')
-        .select(`id, name, class`)
+        .select(`id, name, class, status`)
         .eq('id', id)
         .single()
 
@@ -19,32 +17,58 @@ export default async function PrefectDetailPage({ params }: { params: Promise<{ 
         notFound()
     }
 
-    // Attempt to fetch merits and strikes with recorder info
-    // We do these separately so if one fails (e.g. missing profiles table), we still show the prefect
-    const { data: merits } = await supabase
-        .from('merits')
-        .select(`id, date, description, recorded_by:profiles(full_name)`)
-        .eq('prefect_id', id)
+    // Fetch all discipline types with recorder info
+    const [meritsRes, teguransRes, amaranLisanRes, suratAmaranRes, suspensionsRes] = await Promise.all([
+        supabase.from('merits')
+            .select(`id, date, description, recorded_by:profiles(full_name)`)
+            .eq('prefect_id', id),
+        supabase.from('tegurans')
+            .select(`id, date, description, severity, recorded_by:profiles(full_name)`)
+            .eq('prefect_id', id),
+        supabase.from('amaran_lisan')
+            .select(`id, date, description, recorded_by:profiles(full_name)`)
+            .eq('prefect_id', id),
+        supabase.from('surat_amaran')
+            .select(`id, date, description, recorded_by:profiles(full_name)`)
+            .eq('prefect_id', id),
+        supabase.from('suspensions')
+            .select(`id, start_date, end_date, reason, recorded_by:profiles(full_name)`)
+            .eq('prefect_id', id),
+    ])
 
-    const { data: strikes } = await supabase
-        .from('strikes')
-        .select(`id, date, description, recorded_by:profiles(full_name)`)
-        .eq('prefect_id', id)
+    const merits = meritsRes.data || []
+    const tegurans = teguransRes.data || []
+    const amaranLisan = amaranLisanRes.data || []
+    const suratAmaran = suratAmaranRes.data || []
+    const suspensions = suspensionsRes.data || []
 
     const allEntries = [
-        ...(merits || []).map((m: any) => ({ ...m, type: 'merit' as const })),
-        ...(strikes || []).map((s: any) => ({ ...s, type: 'strike' as const }))
-    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        ...merits.map((m: any) => ({ ...m, type: 'merit' as const })),
+        ...tegurans.map((t: any) => ({ ...t, type: 'teguran' as const })),
+        ...amaranLisan.map((a: any) => ({ ...a, type: 'amaran_lisan' as const })),
+        ...suratAmaran.map((s: any) => ({ ...s, type: 'surat_amaran' as const })),
+        ...suspensions.map((s: any) => ({ ...s, type: 'suspension' as const })),
+    ].sort((a, b) => {
+        const dateA = (a as any).date || (a as any).start_date
+        const dateB = (b as any).date || (b as any).start_date
+        return new Date(dateB).getTime() - new Date(dateA).getTime()
+    })
 
-    const meritsCount = merits?.length || 0
-    const strikesCount = strikes?.length || 0
+    // Determine active suspension (today falls within start_date..end_date)
+    const today = new Date().toISOString().split('T')[0]
+    const activeSuspension = suspensions.find((s: any) =>
+        s.start_date <= today && s.end_date >= today
+    ) || null
 
     return (
         <PrefectDetailContent
             prefect={prefect}
             allEntries={allEntries}
-            meritsCount={meritsCount}
-            strikesCount={strikesCount}
+            meritsCount={merits.length}
+            teguransCount={tegurans.length}
+            amaranLisanCount={amaranLisan.length}
+            suratAmaranCount={suratAmaran.length}
+            activeSuspension={activeSuspension}
         />
     )
 }

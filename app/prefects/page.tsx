@@ -10,14 +10,19 @@ export default async function PrefectsListPage() {
             id,
             name,
             class,
+            status,
             merits:merits(count),
-            strikes:strikes(count)
+            tegurans:tegurans(count),
+            amaran_lisan:amaran_lisan(count),
+            surat_amaran:surat_amaran(count)
         `)
 
     const prefects = (prefectsData || []).map((p: any) => ({
         ...p,
         merits: p.merits?.[0]?.count || 0,
-        strikes: p.strikes?.[0]?.count || 0
+        tegurans: p.tegurans?.[0]?.count || 0,
+        amaran_lisan: p.amaran_lisan?.[0]?.count || 0,
+        surat_amaran: p.surat_amaran?.[0]?.count || 0,
     }))
 
     return (

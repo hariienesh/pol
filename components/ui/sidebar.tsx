@@ -505,6 +505,7 @@ function SidebarMenuButton({
   size = "default",
   tooltip,
   className,
+  nativeButton,
   ...props
 }: useRender.ComponentProps<"button"> &
   React.ComponentProps<"button"> & {
@@ -668,6 +669,7 @@ function SidebarMenuSubButton({
   size = "md",
   isActive = false,
   className,
+  nativeButton,
   ...props
 }: useRender.ComponentProps<"a"> &
   React.ComponentProps<"a"> & {

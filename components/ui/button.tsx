@@ -40,12 +40,14 @@ function Button({
   variant = "default",
   size = "default",
   asChild, // Added for compatibility with libraries like vaul
+  nativeButton = true,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      nativeButton={nativeButton}
       {...props}
     />
   )

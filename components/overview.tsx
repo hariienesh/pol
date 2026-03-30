@@ -6,101 +6,136 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { EyeIcon, AwardIcon, AlertTriangleIcon, ActivityIcon, UsersIcon } from "lucide-react"
+import { EyeIcon, AwardIcon, AlertTriangleIcon, ActivityIcon, UsersIcon, CrownIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+type PrefectOfTheMonth = {
+    id: string
+    name: string
+    class: string
+    meritCount: number
+}
 
 interface OverviewProps {
     stats: {
         meritsThisMonth: number
-        strikesThisMonth: number
+        disciplineThisMonth: number
         atRiskCount: number
         entriesToday: number
     }
     atRiskPrefects: any[]
     topPerformers: any[]
+    prefectOfTheMonth?: PrefectOfTheMonth | null
 }
 
-export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps) {
+export function Overview({ stats, atRiskPrefects, topPerformers, prefectOfTheMonth }: OverviewProps) {
     return (
-        <Card className="col-span-4 overflow-hidden border-none shadow-xl bg-gradient-to-br from-background to-muted/30">
-            <CardHeader className="pb-2">
+        <Card className="col-span-4 border-none shadow-sm bg-card">
+            <CardHeader className="pb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <CardTitle className="text-2xl font-bold tracking-tight">Dashboard Overview</CardTitle>
-                        <CardDescription className="text-muted-foreground/80">
-                            Real-time performance metrics and team status.
+                        <CardTitle className="text-xl font-semibold tracking-tight">Dashboard Overview</CardTitle>
+                        <CardDescription className="text-muted-foreground">
+                            Real-time metrics and prefect standings.
                         </CardDescription>
-                    </div>
-                    <div className="flex -space-x-2">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-8 w-8 rounded-full border-2 border-background bg-muted flex items-center justify-center text-[10px] font-bold">
-                                {String.fromCharCode(64 + i)}
-                            </div>
-                        ))}
-                        <div className="h-8 w-8 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
-                            +5
-                        </div>
                     </div>
                 </div>
             </CardHeader>
 
-            <CardContent className="px-6 pb-6 pt-2">
-                {/* Metrics Bar */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    {[
-                        {
-                            label: "Total Merits",
-                            value: stats.meritsThisMonth,
-                            icon: AwardIcon,
-                            color: "text-green-600 dark:text-green-400",
-                            bg: "bg-green-50 dark:bg-green-950/30",
-                            border: "border-green-100 dark:border-green-900/30"
-                        },
-                        {
-                            label: "Total Strikes",
-                            value: stats.strikesThisMonth,
-                            icon: AlertTriangleIcon,
-                            color: "text-red-600 dark:text-red-400",
-                            bg: "bg-red-50 dark:bg-red-950/30",
-                            border: "border-red-100 dark:border-red-900/30"
-                        },
-                        {
-                            label: "At Risk",
-                            value: stats.atRiskCount,
-                            icon: UsersIcon,
-                            color: "text-amber-600 dark:text-amber-400",
-                            bg: "bg-amber-50 dark:bg-amber-950/30",
-                            border: "border-amber-100 dark:border-amber-900/30"
-                        },
-                        {
-                            label: "Today's Activity",
-                            value: stats.entriesToday,
-                            icon: ActivityIcon,
-                            color: "text-blue-600 dark:text-blue-400",
-                            bg: "bg-blue-50 dark:bg-blue-950/30",
-                            border: "border-blue-100 dark:border-blue-900/30"
-                        },
-                    ].map((metric, i) => (
-                        <div key={i} className={cn(
-                            "flex flex-col gap-1 p-4 rounded-xl border transition-all duration-200 hover:shadow-md",
-                            metric.bg,
-                            metric.border
-                        )}>
-                            <div className="flex items-center justify-between">
-                                <metric.icon className={cn("size-5", metric.color)} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Metric</span>
+            <CardContent className="px-6 pb-6 pt-0">
+                {prefectOfTheMonth ? (
+                    <Card className="mb-6 bg-gradient-to-br from-amber-500/10 via-yellow-500/10 to-orange-500/10 border-amber-200/50 dark:border-amber-900/50 shadow-sm relative overflow-hidden">
+                        <div className="absolute right-0 top-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
+                        <CardContent className="p-6 relative z-10">
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                                <div className="p-3 bg-amber-100 dark:bg-amber-900/50 rounded-2xl shrink-0">
+                                    <CrownIcon className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+                                </div>
+                                <div className="space-y-1 text-center sm:text-left flex-1">
+                                    <h3 className="font-semibold text-lg text-amber-900 dark:text-amber-100 flex items-center justify-center sm:justify-start gap-2">
+                                        Prefect of the Month
+                                    </h3>
+                                    <p className="text-3xl font-bold">{prefectOfTheMonth.name}</p>
+                                    <p className="text-muted-foreground">{prefectOfTheMonth.class} <span className="mx-2">•</span> {prefectOfTheMonth.meritCount} Merits this month</p>
+                                </div>
+                                <div className="mt-4 sm:mt-0">
+                                    <Button asChild className="bg-amber-600 hover:bg-amber-700 text-white rounded-full px-6">
+                                        <Link href={`/prefects/${prefectOfTheMonth.id}`}>View Profile</Link>
+                                    </Button>
+                                </div>
                             </div>
-                            <div className="mt-2">
-                                <span className="text-3xl font-bold tracking-tight">{metric.value}</span>
-                                <p className="text-[11px] font-medium text-muted-foreground mt-0.5">{metric.label}</p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <Card className="mb-6 border-dashed bg-muted/30 relative overflow-hidden">
+                        <CardContent className="p-6">
+                            <div className="flex flex-col sm:flex-row items-center gap-4 opacity-70 grayscale">
+                                <div className="p-3 bg-muted rounded-2xl shrink-0">
+                                    <CrownIcon className="w-8 h-8 text-muted-foreground" />
+                                </div>
+                                <div className="space-y-1 text-center sm:text-left flex-1">
+                                    <h3 className="font-semibold text-lg flex items-center justify-center sm:justify-start gap-2 text-muted-foreground">
+                                        Prefect of the Month
+                                    </h3>
+                                    <p className="text-xl font-medium italic text-muted-foreground">No records for this month yet</p>
+                                    <p className="text-xs text-muted-foreground italic">Reward a prefect with merits to crown a winner!</p>
+                                </div>
+                                <div className="mt-4 sm:mt-0">
+                                    <Button asChild variant="outline" className="rounded-full px-6 border-dashed">
+                                        <Link href="/prefects">Go to Prefects List</Link>
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        </CardContent>
+                    </Card>
+                )}
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Merits</CardTitle>
+                            <AwardIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stats.meritsThisMonth}</div>
+                            <p className="text-xs text-muted-foreground">Merits recorded this month</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Discipline Entries</CardTitle>
+                            <AlertTriangleIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stats.disciplineThisMonth}</div>
+                            <p className="text-xs text-muted-foreground">Discipline records this month</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">At Risk</CardTitle>
+                            <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stats.atRiskCount}</div>
+                            <p className="text-xs text-muted-foreground">Prefects facing suspension/dismissal</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Today's Activity</CardTitle>
+                            <ActivityIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stats.entriesToday}</div>
+                            <p className="text-xs text-muted-foreground">Total records added today</p>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 <Tabs defaultValue="at-risk" className="space-y-4">
-                    <TabsList className="bg-muted/50 p-1">
-                        <TabsTrigger value="at-risk">At Risk</TabsTrigger>
+                    <TabsList className="bg-muted">
+                        <TabsTrigger value="at-risk">Dalam Risiko (At Risk)</TabsTrigger>
                         <TabsTrigger value="top-performers">Top Performers</TabsTrigger>
                     </TabsList>
 
@@ -110,10 +145,10 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="font-bold">Name</TableHead>
-                                            <TableHead className="font-bold">Class</TableHead>
-                                            <TableHead className="text-center font-bold">Strikes</TableHead>
-                                            <TableHead className="text-right font-bold">Action</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Class</TableHead>
+                                            <TableHead className="text-center">Surat Amaran</TableHead>
+                                            <TableHead className="text-right">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -129,15 +164,15 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                                                     <TableCell className="font-medium whitespace-nowrap">{prefect.name}</TableCell>
                                                     <TableCell className="text-muted-foreground whitespace-nowrap">{prefect.class}</TableCell>
                                                     <TableCell className="text-center">
-                                                        <Badge variant="destructive" className="font-bold px-3">
-                                                            {prefect.strikes}
+                                                        <Badge variant="destructive" className="font-bold px-2">
+                                                            {prefect.suratAmaranCount}
                                                         </Badge>
                                                     </TableCell>
-                                                    <TableCell className="text-right px-4">
+                                                    <TableCell className="text-right pr-4">
                                                         <Button
-                                                            size="sm"
+                                                            size="icon"
                                                             variant="ghost"
-                                                            className="h-8 w-8 p-0 rounded-full"
+                                                            className="h-8 w-8 rounded-full"
                                                             nativeButton={false}
                                                             render={
                                                                 <Link href={`/prefects/${prefect.id}`} />
@@ -161,10 +196,10 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="font-bold">Name</TableHead>
-                                            <TableHead className="font-bold">Class</TableHead>
-                                            <TableHead className="text-center font-bold">Merits</TableHead>
-                                            <TableHead className="text-right font-bold">Action</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Class</TableHead>
+                                            <TableHead className="text-center">Merits</TableHead>
+                                            <TableHead className="text-right">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -180,15 +215,15 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                                                     <TableCell className="font-medium whitespace-nowrap">{prefect.name}</TableCell>
                                                     <TableCell className="text-muted-foreground whitespace-nowrap">{prefect.class}</TableCell>
                                                     <TableCell className="text-center">
-                                                        <Badge className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 font-bold px-3">
-                                                            {prefect.merits}
+                                                        <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-950/40 dark:text-green-400 font-bold px-2">
+                                                            {prefect.meritsCount}
                                                         </Badge>
                                                     </TableCell>
-                                                    <TableCell className="text-right px-4">
+                                                    <TableCell className="text-right pr-4">
                                                         <Button
-                                                            size="sm"
+                                                            size="icon"
                                                             variant="ghost"
-                                                            className="h-8 w-8 p-0 rounded-full"
+                                                            className="h-8 w-8 rounded-full"
                                                             nativeButton={false}
                                                             render={
                                                                 <Link href={`/prefects/${prefect.id}`} />
@@ -205,7 +240,6 @@ export function Overview({ stats, atRiskPrefects, topPerformers }: OverviewProps
                             </div>
                         </div>
                     </TabsContent>
-
                 </Tabs>
             </CardContent>
         </Card>

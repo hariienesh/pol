@@ -34,7 +34,7 @@ export function NavDocuments({
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton render={<a href={item.url} />} nativeButton={false}>
+            <SidebarMenuButton render={<a href={item.url} />}>
               {item.icon}
               <span>{item.name}</span>
             </SidebarMenuButton>
